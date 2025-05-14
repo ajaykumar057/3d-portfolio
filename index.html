@@ -1,1 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajay Kumar | 3D Portfolio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      overflow-x: hidden;
+      background-color: #0a0a0a;
+      color: #ffffff;
+    }
+    
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -1;
+    }
+    
+    #content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .section {
+      min-height: 100vh;
+      padding: 100px 10%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .header {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 40px;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      background-color: rgba(10, 10, 10, 0.5);
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #4da6ff;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-link {
+      cursor: pointer;
+      color: #ffffff;
+      font-weight: 500;
+      transition: color 0.3s;
+      text-decoration: none;
+    }
+    
+    .nav-link:hover {
+      color: #4da6ff;
+    }
+    
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    
+    .title {
+      font-size: 72px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #4da6ff, #a64dff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 20px;
+    }
+    
+    .subtitle {
+      font-size: 24px;
+      font-weight: 300;
+      max-width: 600px;
+      line-height: 1.5;
+    }
+    
+    .button {
+      margin-top: 20px;
+      padding: 12px 30px;
+      background: linear-gradient(45deg, #4da6ff, #a64dff);
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(77, 166, 255, 0.3);
+    }
+    
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    
+    .skill-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 10px;
+      width: calc(33.33% - 20px);
+      min-width: 250px;
+      backdrop-filter: blur(5px);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .skill-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(77, 166, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .skill-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #4da6ff;
+    }
+    
+    .skill-description {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    
+    .project-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .project-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .project-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(77, 166, 255, 0.15);
+    }
+    
+    .project-image {
+      width: 100%;
+      height: 200px;
+      background-color: #1d1d1d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 600;
+      color: #4da6ff;
+    }
+    
+    .project-content {
+      padding: 20px;
+    }
+    
+    .project-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #4da6ff;
+    }
+    
+    .project-tech {
+      font-size: 14px;
+      color: #a64dff;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    
+    .project-description {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    
+    .contact-content {
+      max-width: 600px;
+    }
+    
+    .contact-form {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .form-label {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    .form-input, .form-textarea {
+      padding: 12px 15px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 16px;
+      resize: vertical;
+    }
+    
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #4da6ff;
+    }
+    
+    .section-title {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+    
+    .section-description {
+      font-size: 18px;
+      max-width: 800px;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+    
+    .experience-timeline {
+      position: relative;
+      max-width: 800px;
+    }
+    
+    .experience-timeline::before {
+      content: '';
+      position: absolute;
+      width: 2px;
+      background-color: rgba(255, 255, 255, 0.1);
+      top: 0;
+      bottom: 0;
+      left: 20px;
+    }
+    
+    .timeline-item {
+      position: relative;
+      margin-bottom: 50px;
+      padding-left: 60px;
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(45deg, #4da6ff, #a64dff);
+      border-radius: 50%;
+      left: 11px;
+      top: 0;
+    }
+    
+    .timeline-date {
+      font-size: 14px;
+      color: #a64dff;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    
+    .timeline-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #4da6ff;
+    }
+    
+    .timeline-description {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    
+    @media (max-width: 768px) {
+      .title {
+        font-size: 48px;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .section {
+        padding: 80px 5%;
+      }
+      
+      .skill-card {
+        width: 100%;
+      }
+      
+      .project-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  
+  <header class="header">
+    <div class="logo">AK</div>
+    <nav class="nav-links">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#skills" class="nav-link">Skills</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="#education" class="nav-link">Education</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+  </header>
+  
+  <div id="content">
+    <section id="home" class="section">
+      <div class="hero">
+        <h1 class="title">Ajay Kumar</h1>
+        <p class="subtitle">Computer Science student specializing in AI/ML. Passionate about technology, innovation, and problem-solving with a dedication to lifelong learning.</p>
+        <button class="button">View My Projects</button>
+      </div>
+    </section>
+    
+    <section id="about" class="section">
+      <h2 class="section-title">About Me</h2>
+      <p class="section-description">Dedicated and ambitious Computer Science student at NIIT University, with a focus on AI/ML. Technology, innovation, and problem-solving enthusiast with a strong dedication to lifelong learning. Actively involved in academic projects and co-curricular activities to implement theoretical concepts in practical situations. Looking for opportunities to contribute to fast-paced tech spaces and drive meaningful solutions.</p>
+      
+      <div class="experience-timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">2022 - Present</div>
+          <h3 class="timeline-title">Bachelor of Technology, NIIT University</h3>
+          <p class="timeline-description">Pursuing Computer Science degree with focus on Artificial Intelligence and Machine Learning.</p>
+        </div>
+        
+        <div class="timeline-item">
+          <div class="timeline-date">2023 - 2024</div>
+          <h3 class="timeline-title">AI & Machine Learning, Data Science Bootcamp</h3>
+          <p class="timeline-description">Completed comprehensive bootcamp on Udemy, covering machine learning algorithms, data science techniques and practical applications.</p>
+        </div>
+        
+        <div class="timeline-item">
+          <div class="timeline-date">2025</div>
+          <h3 class="timeline-title">AWS Certified Cloud Practitioner</h3>
+          <p class="timeline-description">Obtained AWS certification, gaining knowledge about cloud infrastructure, services, and best practices.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section id="skills" class="section">
+      <h2 class="section-title">Skills & Expertise</h2>
+      <p class="section-description">My technical toolkit encompasses various programming languages, frameworks, and technologies that I've mastered through academic and personal projects.</p>
+      
+      <div class="skills-container">
+        <div class="skill-card">
+          <h3 class="skill-title">Python</h3>
+          <p class="skill-description">Proficient in Python programming with focus on data science, machine learning libraries, and backend development with Django.</p>
+        </div>
+        
+        <div class="skill-card">
+          <h3 class="skill-title">React</h3>
+          <p class="skill-description">Experienced in building responsive and interactive user interfaces using React and JavaScript.</p>
+        </div>
+        
+        <div class="skill-card">
+          <h3 class="skill-title">JavaScript</h3>
+          <p class="skill-description">Strong foundation in JavaScript for frontend development, DOM manipulation, and API integration.</p>
+        </div>
+        
+        <div class="skill-card">
+          <h3 class="skill-title">HTML & CSS</h3>
+          <p class="skill-description">Skilled in creating structured, accessible web pages with responsive designs using modern CSS techniques.</p>
+        </div>
+        
+        <div class="skill-card">
+          <h3 class="skill-title">Django</h3>
+          <p class="skill-description">Experience in developing web applications using Django framework with focus on MVT architecture and ORM.</p>
+        </div>
+        
+        <div class="skill-card">
+          <h3 class="skill-title">AI/ML</h3>
+          <p class="skill-description">Knowledge of machine learning algorithms, deep learning with LSTM, and practical implementation of ML models.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section id="projects" class="section">
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-description">Showcasing my best work across full-stack development, AI/ML, and data science domains.</p>
+      
+      <div class="project-container">
+        <div class="project-card">
+          <div class="project-image">VolatiSense</div>
+          <div class="project-content">
+            <h3 class="project-title">VolatiSense</h3>
+            <p class="project-tech">Docker, React.js, Node.js, Python, Jenkins</p>
+            <p class="project-description">Market Risk Assessment Web Application with Value at Risk (VaR) and CVaR-based financial risk assessment. Features interactive risk metrics and stock data visualization.</p>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-image">Testwise</div>
+          <div class="project-content">
+            <h3 class="project-title">Testwise</h3>
+            <p class="project-tech">Django, SQLite, Mistral AI</p>
+            <p class="project-description">AI-Based Document Management & Analysis system with OCR (Tesseract) and AI-based grading & summarization using Mistral AI API.</p>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-image">Live Sports Score</div>
+          <div class="project-content">
+            <h3 class="project-title">Live Sports Score Website</h3>
+            <p class="project-tech">Django, API Integration</p>
+            <p class="project-description">Django-based sports website displaying live match scores with real-time sports API integration and responsive UI.</p>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-image">Load Forecasting</div>
+          <div class="project-content">
+            <h3 class="project-title">Load Forecasting & Anomaly Detection</h3>
+            <p class="project-tech">LSTM, AI/ML</p>
+            <p class="project-description">R&D Project on time-series forecasting for energy load prediction using LSTM-based deep learning models and anomaly detection algorithms.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="education" class="section">
+      <h2 class="section-title">Education</h2>
+      <p class="section-description">My academic journey and continuous learning endeavors.</p>
+      
+      <div class="experience-timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">08/2022 – 10/2026</div>
+          <h3 class="timeline-title">Bachelor of Technology, NIIT University</h3>
+          <p class="timeline-description">Pursuing Computer Science with specialization in Artificial Intelligence and Machine Learning at NIIT University, Neemrana.</p>
+        </div>
+        
+        <div class="timeline-item">
+          <div class="timeline-date">2023</div>
+          <h3 class="timeline-title">Complete A.I. & Machine Learning, Data Science Bootcamp</h3>
+          <p class="timeline-description">Comprehensive training program covering machine learning algorithms, neural networks, and data analysis techniques.</p>
+        </div>
+        
+        <div class="timeline-item">
+          <div class="timeline-date">2025</div>
+          <h3 class="timeline-title">AWS Certified Cloud Practitioner CLF-C02</h3>
+          <p class="timeline-description">Cloud computing certification demonstrating knowledge of AWS cloud concepts, services, security, and architecture.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section id="contact" class="section">
+      <h2 class="section-title">Get In Touch</h2>
+      <div class="contact-content">
+        <p class="section-description">Interested in working together? Reach out through this form or connect directly via email or LinkedIn.</p>
+        
+        <div class="contact-form">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-input" placeholder="Your Name">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" placeholder="your.email@example.com">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" rows="5" placeholder="Your message"></textarea>
+          </div>
+          
+          <button class="button">Send Message</button>
+        </div>
+      </div>
+    </section>
+  </div>
 
+  <script type="module">
+    import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
+    
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+    
+    // Camera position
+    camera.position.z = 30;
+    
+    // Create particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 3000;
+    
+    const posArray = new Float32Array(particlesCount * 3);
+    const colorsArray = new Float32Array(particlesCount * 3);
+    
+    for (let i = 0; i < particlesCount * 3; i += 3) {
+      // Position
+      posArray[i] = (Math.random() - 0.5) * 100;
+      posArray[i + 1] = (Math.random() - 0.5) * 100;
+      posArray[i + 2] = (Math.random() - 0.5) * 100;
+      
+      // Color - blue to purple gradient
+      colorsArray[i] = Math.random() * 0.3 + 0.3; // R: 0.3-0.6
+      colorsArray[i + 1] = Math.random() * 0.3 + 0.3; // G: 0.3-0.6
+      colorsArray[i + 2] = Math.random() * 0.3 + 0.7; // B: 0.7-1.0
+    }
+    
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+    
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.05,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.8
+    });
+    
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    
+    // Create floating spheres representing skills
+    const spheres = [];
+    const sphereColors = [
+      new THREE.Color(0x4da6ff), // Blue
+      new THREE.Color(0xa64dff), // Purple
+      new THREE.Color(0x4dffb8), // Teal
+      new THREE.Color(0xff4d4d), // Red
+      new THREE.Color(0xffb84d)  // Orange
+    ];
+    
+    for (let i = 0; i < 5; i++) {
+      const geometry = new THREE.SphereGeometry(1, 32, 32);
+      const material = new THREE.MeshBasicMaterial({ 
+        color: sphereColors[i],
+        transparent: true,
+        opacity: 0.7,
+        wireframe: true
+      });
+      const sphere = new THREE.Mesh(geometry, material);
+      
+      sphere.position.x = (Math.random() - 0.5) * 20;
+      sphere.position.y = (Math.random() - 0.5) * 20;
+      sphere.position.z = (Math.random() - 0.5) * 20;
+      
+      sphere.userData = {
+        speedX: (Math.random() - 0.5) * 0.05,
+        speedY: (Math.random() - 0.5) * 0.05,
+        speedZ: (Math.random() - 0.5) * 0.05,
+        rotationSpeed: Math.random() * 0.01
+      };
+      
+      spheres.push(sphere);
+      scene.add(sphere);
+    }
+    
+    // Create connections between spheres
+    const connectionMaterial = new THREE.LineBasicMaterial({ 
+      color: 0x4da6ff,
+      transparent: true,
+      opacity: 0.2
+    });
+    
+    const connections = [];
+    
+    for (let i = 0; i < spheres.length; i++) {
+      for (let j = i + 1; j < spheres.length; j++) {
+        const geometry = new THREE.BufferGeometry();
+        const points = [
+          spheres[i].position,
+          spheres[j].position
+        ];
+        geometry.setFromPoints(points);
+        
+        const line = new THREE.Line(geometry, connectionMaterial);
+        connections.push({ line, from: i, to: j });
+        scene.add(line);
+      }
+    }
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    
+    // Mouse move effect
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    document.addEventListener('mousemove', (event) => {
+      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+    
+    // Scroll effect
+    let scrollY = 0;
+    window.addEventListener('scroll', () => {
+      scrollY = window.scrollY;
+    });
+    
+    // Animation loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+      
+      // Rotate particles slightly based on mouse position
+      particlesMesh.rotation.y += 0.0003;
+      particlesMesh.rotation.x += 0.0001;
+      
+      // Move camera slightly based on mouse
+      camera.position.x += (mouseX - camera.position.x) * 0.05;
+      camera.position.y += (mouseY - camera.position.y) * 0.05;
+      
+      // Move spheres
+      spheres.forEach((sphere, index) => {
+        sphere.position.x += sphere.userData.speedX;
+        sphere.position.y += sphere.userData.speedY;
+        sphere.position.z += sphere.userData.speedZ;
+        
+        sphere.rotation.x += sphere.userData.rotationSpeed;
+        sphere.rotation.y += sphere.userData.rotationSpeed * 0.7;
+        
+        // Bounce off invisible boundaries
+        if (Math.abs(sphere.position.x) > 15) sphere.userData.speedX *= -1;
+        if (Math.abs(sphere.position.y) > 15) sphere.userData.speedY *= -1;
+        if (Math.abs(sphere.position.z) > 15) sphere.userData.speedZ *= -1;
+      });
+      
+      // Update connections
+      connections.forEach(conn => {
+        const pointsArray = [
+          spheres[conn.from].position,
+          spheres[conn.to].position
+        ];
+        conn.line.geometry.setFromPoints(pointsArray);
+        conn.line.geometry.attributes.position.needsUpdate = true;
+      });
+      
+      // Adjust rotation based on scroll
+      scene.rotation.y = scrollY * 0.0005;
+      
+      renderer.render(scene, camera);
+    };
+    
+    animate();
+    
+    // Smooth scrolling for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
